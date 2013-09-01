@@ -20,12 +20,10 @@ app.use(restify.bodyParser());
 
 // Views for test
 app.pre(function(req, res, next) {
-  if (req.url === '/') {
-     req.url = '/views';
-  }
   if (req.url === '/views') {
      req.url = '/views/index.html';
   }
+  res.setHeader('content-type', 'application/json; charset=utf-8');
   return next();
 });
 
