@@ -5,6 +5,7 @@
 
 var mongoose   = require('mongoose');
 var Ka         = mongoose.model('Ka');
+var User = mongoose.model('User');
 var restify    = require('restify');
 var fs         = require('fs');
 
@@ -22,14 +23,18 @@ module.exports = function (app) {
 		var filename = new Date().getTime() + req.files.ka.name;
 		fs.renameSync(req.files.ka.path, __dirname + "/../public/" + filename);
 
-		var ka = new Ka(req.params);
-		ka.ka = filename;
-		ka.save(function (err, ka) {
-			if (!err) {
+		User.findById(req.params.creator, function(err, user) {
+			if (err) { return next(err); }
+
+			var ka = new Ka(req.params);
+			ka.ka = filename;
+			ka.save(function (err, ka) {
+				if (err) { return next(err); } 
+
+				user.kas.push(ka);
+				user.save();
 				res.send(ka);
-			} else {
-				return next(err);
-			}
+			});
 		});
 	}
 
@@ -63,7 +68,7 @@ module.exports = function (app) {
 	* @param next method
 	*/
 	function getKas(req, res, next) {
-		Ka.find().sort({_id: -1}).exec(function(err, kas) {
+		Ka.find().sort({_id: -1}).populate('creator').exec(function(err, kas) {
 			if (!err) {
 				res.send(kas);
 			} else {

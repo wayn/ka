@@ -24,7 +24,7 @@ app.pre(function(req, res, next) {
     if (req.url === '/views') {
         req.url = '/views/index.html';
     }
-    // res.setHeader('content-type', 'application/json; charset=utf-8');
+    res.setHeader('content-type', 'application/json; charset=utf-8');
     return next();
 });
 

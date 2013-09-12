@@ -57,7 +57,7 @@ module.exports = function (app) {
 	* @param next method
 	*/
 	function getUsers(req, res, next) {
-		User.find().sort({_id: -1}).exec(function(err, users) {
+		User.find().sort({_id: -1}).populate('kas').exec(function(err, users) {
 			if (!err) {
 				res.send(users);
 			} else {
