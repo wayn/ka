@@ -1,11 +1,22 @@
+
+/**
+ * Module dependencies.
+ */
+
 var mongoose   = require('mongoose');
 var Ka         = mongoose.model('Ka');
 var restify    = require('restify');
-var formidable = require('formidable');
 var fs         = require('fs');
 
 module.exports = function (app) {
 
+	/**
+	* Create a new ka model, fill it up and save it to Mongodb
+	*
+	* @param request
+	* @param response
+	* @param next method
+	*/
 	function postKa(req, res, next) {
 
 		var filename = new Date().getTime() + req.files.ka.name;
@@ -22,6 +33,13 @@ module.exports = function (app) {
 		});
 	}
 
+	/**
+	* Search for one ka
+	* 
+	* @param request
+	* @param response
+	* @param next method
+	*/
 	function getKa(req, res, next) {
 		if (req.params.id) {
 			Ka.findById(req.params.id, function (err, ka) {
@@ -37,6 +55,13 @@ module.exports = function (app) {
 		}
 	}
 
+	/**
+	* Search for all kas
+	* 
+	* @param request
+	* @param response
+	* @param next method
+	*/
 	function getKas(req, res, next) {
 		Ka.find().sort({_id: -1}).exec(function(err, kas) {
 			if (!err) {
@@ -47,7 +72,28 @@ module.exports = function (app) {
 		});
 	}
 
+	// Set up routes
+	/**
+	* Ceate a ka
+	*
+	* @param path
+	* @param promised callback
+	*/
 	app.post('/api/v1/ka', postKa);
+
+	/**
+	* Search for one ka
+	*
+	* @param path
+	* @param promised callback
+	*/
 	app.get('/api/v1/ka/:id', getKa);
+
+	/**
+	* Search for all ka
+	*
+	* @param path
+	* @param pnromised callback
+	*/
 	app.get('/api/v1/kas', getKas);
 }

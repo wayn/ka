@@ -20,11 +20,12 @@ app.use(restify.bodyParser());
 
 // Views for test
 app.pre(function(req, res, next) {
-  if (req.url === '/views') {
-     req.url = '/views/index.html';
-  }
-  res.setHeader('content-type', 'application/json; charset=utf-8');
-  return next();
+
+    if (req.url === '/views') {
+        req.url = '/views/index.html';
+    }
+    // res.setHeader('content-type', 'application/json; charset=utf-8');
+    return next();
 });
 
 app.get(/\/views\/?.*/, function (req, res) {
@@ -39,6 +40,8 @@ app.get(/\/views\/?.*/, function (req, res) {
 
 // Models & Controllers
 require("./models/ka");
+require("./models/user");
 require("./controllers/kas")(app);
+require("./controllers/users")(app);
 
 app.listen(3000);
